@@ -1,0 +1,42 @@
+========================================
+   INSTRUCCIONES PARA ABRIR EL PROGRAMA
+========================================
+ 
+Paso 1 - Abrir el CMD (Símbolo del sistema)
+   - Presiona las teclas Windows + R
+   - Escribe cmd y presiona Enter
+   (o búscalo en el menú de inicio como Símbolo del sistema)
+ 
+------------------------------------------
+ 
+Paso 2 - Ir a la carpeta del Frontend
+   - Copia la ruta donde se encuentra el frontend
+   - En el CMD escribe  cd [pega aquí la ruta]
+   - Ejemplo  cd CUsersTuUsuarioproyectofrontend
+   - Presiona Enter
+ 
+------------------------------------------
+ 
+Paso 3 - Ejecutar el servidor de desarrollo
+   - Escribe o pega el siguiente comando y presiona Enter
+ 
+        npm run dev
+ 
+------------------------------------------
+ 
+Paso 4 - Abrir el navegador
+   - Una vez que el servidor esté corriendo,
+     abre tu navegador (Chrome, Edge, Firefox, etc.)
+   - Ve a la siguiente dirección
+ 
+        httplocalhost5173
+ 
+------------------------------------------
+ 
+¡Listo! El programa debería estar corriendo en tu navegador.
+ 
+NOTA No cierres la ventana del CMD mientras usas el programa,
+      ya que esto detendría el servidor.
+ 
+========================================
+ 
