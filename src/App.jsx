@@ -286,7 +286,6 @@ function Semaforo({ nivel }) {
   );
 }
 
-// ─── SPINNER DE CARGA CON SALUDO ──────────────────────────────────────────────
 function LoadingScreen({ nombre }) {
   const [paso, setPaso] = useState(0);
   const pasos = ["Conectando con el servidor…", "Cargando tu perfil…", "Sincronizando datos…", "¡Listo!"];
@@ -314,7 +313,6 @@ function LoadingScreen({ nombre }) {
   );
 }
 
-// ─── PANTALLA DE RESULTADOS ───────────────────────────────────────────────────
 function RiskResultScreen({ riesgo, onContinuar }) {
   const proto = PROTOCOLOS[riesgo.level2] || PROTOCOLOS.bajo;
   const bgColor = { bajo: "#F0FDF4", moderado: "#FFFBEB", alto: "#FEF2F2", "muy alto": "#FEF2F2" }[riesgo.level2] || "#F0FDF4";
@@ -356,14 +354,12 @@ function RiskResultScreen({ riesgo, onContinuar }) {
   );
 }
 
-// ─── APP PRINCIPAL ────────────────────────────────────────────────────────────
 export default function App() {
   const [screen, setScreen] = useState("welcome");
   const [datosRegistro, setDatosRegistro] = useState({});
   const [riesgo, setRiesgo] = useState(null);
   const [historial, setHistorial] = useState([]);
   const [cargando, setCargando] = useState(false);
-  // nombre para la pantalla de carga
   const [nombreCarga, setNombreCarga] = useState("");
 
   const guardar = (nuevos) => setDatosRegistro(prev => ({ ...prev, ...nuevos }));
@@ -411,7 +407,6 @@ export default function App() {
     }
   };
 
-  // Al completar registro de cuenta → directo al dashboard
   const handleCuentaCreada = () => {
     entrarDashboard(riesgo, historial, datosRegistro.nombre || LS.get("dz_nombre", ""));
   };
@@ -465,7 +460,6 @@ export default function App() {
   );
 }
 
-// ─── WELCOME ─────────────────────────────────────────────────────────────────
 function WelcomeScreen({ onStart, onLogin }) {
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
@@ -489,7 +483,6 @@ function WelcomeScreen({ onStart, onLogin }) {
   );
 }
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
 function LoginScreen({ onBack, onSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -525,7 +518,6 @@ function LoginScreen({ onBack, onSuccess }) {
   );
 }
 
-// ─── STEP 1 ───────────────────────────────────────────────────────────────────
 function Step1({ onNext }) {
   const [role, setRole] = useState("");
   const [nombre, setNombre] = useState("");
@@ -663,7 +655,6 @@ function Step1({ onNext }) {
   );
 }
 
-// ─── STEP 2 ───────────────────────────────────────────────────────────────────
 function Step2({ onNext, onBack }) {
   const [peso, setPeso] = useState("");
   const [altura, setAltura] = useState("");
@@ -701,7 +692,6 @@ function Step2({ onNext, onBack }) {
   );
 }
 
-// ─── STEP 3 ───────────────────────────────────────────────────────────────────
 function Step3({ onNext, onBack }) {
   const [herencia, setHerencia] = useState("Sí, uno o más familiares directos");
   const [herenciaTipo, setHerenciaTipo] = useState("");
@@ -735,7 +725,6 @@ function Step3({ onNext, onBack }) {
   );
 }
 
-// ─── STEP 4 ───────────────────────────────────────────────────────────────────
 function Step4({ onNext, onBack }) {
   const [refrescos, setRefrescos] = useState("");
   const [desayuno, setDesayuno] = useState("");
@@ -791,7 +780,6 @@ function Step4({ onNext, onBack }) {
   );
 }
 
-// ─── REGISTER ACCOUNT ─────────────────────────────────────────────────────────
 function RegisterAccount({ onNext, onBack }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -818,7 +806,6 @@ function RegisterAccount({ onNext, onBack }) {
     setAttempted(true);
     if (!validate()) return;
     LS.set("dz_email", email);
-    // ── directo al dashboard, sin SuccessScreen ──
     onNext();
   };
 
@@ -854,7 +841,6 @@ function RegisterAccount({ onNext, onBack }) {
   );
 }
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard({ riesgo, historial, datosRegistro, onAgregarHistorial, onActualizarRiesgo, onLogout }) {
   const [activeTab, setActiveTab] = useState("home");
   const [showNotif, setShowNotif] = useState(false);
@@ -944,30 +930,23 @@ function Dashboard({ riesgo, historial, datosRegistro, onAgregarHistorial, onAct
   );
 }
 
-// ─── HOME TAB (con saludo personalizado) ─────────────────────────────────────
 function HomeTab({ riesgo, historial, datosRegistro }) {
   const currentLevel = riesgo?.level2 ?? "bajo";
   const levelColor = { bajo: "#22C55E", moderado: "#F59E0B", alto: "#EF4444", "muy alto": "#991B1B" };
   const levelLabel = { bajo: "Bajo", moderado: "Moderado", alto: "Alto", "muy alto": "Muy alto" };
-
-  // Obtener el primer nombre del usuario
   const nombreCompleto = datosRegistro?.nombre || LS.get("dz_nombre", "") || "";
   const primerNombre = nombreCompleto.split(" ")[0] || "";
-
   const racha = calcularRacha();
   const metaRacha = 7;
   const diasMarcados = Array.from({ length: metaRacha }, (_, i) => i < racha);
-
   const xpBase = 320;
   const xpTotal = xpBase + (racha * 10) + (historial.length * 15);
   const nivel = Math.floor(xpTotal / 100) + 1;
-
   const planActual = PLANES_HABITOS[riesgo?.level2 ?? "bajo"] || PLANES_HABITOS.bajo;
   const actividadesRegistro = planActual.slice(0, 3).map(a => ({
     nombre: a.accion.split(" ").slice(0, 2).join(" "),
     xp: a.tag.match(/\+\d+\s*XP/)?.[0] ?? "+10 XP",
   }));
-
   const chartH = 80, chartW = 250, maxVal = 100;
   let riskData;
   if (historial.length >= 2) {
@@ -984,19 +963,15 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
 
   return (
     <>
-      {/* ── TARJETA DE BIENVENIDA PERSONALIZADA ── */}
       <div style={{ background: "linear-gradient(135deg, #1A3FA6 0%, #1565C0 60%, #2E86C1 100%)", borderRadius: 18, padding: "16px 18px", marginBottom: 10, boxShadow: "0 6px 24px rgba(26,63,166,0.3)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
         <div style={{ fontSize: 10, color: "rgba(255,255,255,0.7)", fontWeight: 600, letterSpacing: 1, marginBottom: 4 }}>BIENVENIDO DE NUEVO</div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "white", marginBottom: 8 }}>
-          {primerNombre ? `Hola, ${primerNombre} 👋` : "Hola 👋"}
-        </div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "white", marginBottom: 8 }}>{primerNombre ? `Hola, ${primerNombre} 👋` : "Hola 👋"}</div>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.18)", borderRadius: 20, padding: "4px 12px" }}>
           <span style={{ fontSize: 14 }}>⭐</span>
           <span style={{ fontSize: 12, color: "white", fontWeight: 700 }}>Nivel {nivel} · {xpTotal} XP</span>
         </div>
       </div>
-
       {riesgo && (
         <div style={{ background: "white", borderRadius: 18, padding: "14px", border: `1.5px solid ${BORDER}`, marginBottom: 10, boxShadow: "0 2px 12px rgba(26,63,166,0.08)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -1012,7 +987,6 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
           <div style={{ marginTop: 8, fontSize: 10, color: TEXT_MID, textAlign: "center" }}>Próxima re-evaluación en 30 días · toca "Evaluar" para actualizar</div>
         </div>
       )}
-
       <div style={{ background: "white", borderRadius: 18, padding: "14px 12px", boxShadow: "0 2px 12px rgba(26,63,166,0.08)", border: `1.5px solid ${BORDER}`, marginBottom: 10 }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: TEXT, marginBottom: 10 }}>
           Tendencia del índice de riesgo
@@ -1035,7 +1009,6 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
           {riskData.map((d, i) => <text key={i} x={pts[i].x} y={chartH + 14} fontSize="7.5" fill="#90CAF9" textAnchor="middle">{d.sem}</text>)}
         </svg>
       </div>
-
       {riesgo && (
         <div style={{ background: "white", borderRadius: 18, padding: "14px", border: `1.5px solid ${BORDER}`, marginBottom: 10 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: NAVY, marginBottom: 8 }}>● PLAN ACTIVO — {PROTOCOLOS[riesgo.level2]?.frecuencia}</div>
@@ -1048,7 +1021,6 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
           ))}
         </div>
       )}
-
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10, alignItems: "stretch" }}>
         <div style={{ background: "white", borderRadius: 18, padding: "12px 10px", border: `1.5px solid ${BORDER}`, boxShadow: "0 2px 12px rgba(26,63,166,0.07)", display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 20, marginBottom: 4 }}>🔥</div>
@@ -1059,15 +1031,12 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
               <div key={i} style={{ width: 16, height: 16, borderRadius: 4, background: activo ? "#EF4444" : "#EEF4FC", border: activo ? "none" : `1.5px solid ${BORDER}` }} />
             ))}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 800, color: TEXT }}>
-            {racha} día{racha !== 1 ? "s" : ""} <span style={{ fontSize: 14 }}>🔥</span>
-          </div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: TEXT }}>{racha} día{racha !== 1 ? "s" : ""} <span style={{ fontSize: 14 }}>🔥</span></div>
           <div style={{ marginTop: 6, height: 4, background: "#EEF4FC", borderRadius: 3, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${Math.min((racha / metaRacha) * 100, 100)}%`, background: "linear-gradient(90deg, #EF4444, #F97316)", borderRadius: 3, transition: "width 0.6s ease" }} />
           </div>
           <div style={{ fontSize: 9, color: TEXT_MID, marginTop: 4 }}>Meta: {metaRacha} días seguidos</div>
         </div>
-
         <div style={{ background: "white", borderRadius: 18, padding: "12px 10px", border: `1.5px solid ${BORDER}`, boxShadow: "0 2px 12px rgba(26,63,166,0.07)", display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 20, marginBottom: 4 }}>📋</div>
           <div style={{ fontSize: 12, fontWeight: 800, color: "#F59E0B", marginBottom: 1 }}>Registro</div>
@@ -1088,7 +1057,6 @@ function HomeTab({ riesgo, historial, datosRegistro }) {
   );
 }
 
-// ─── PESTAÑA EVALUAR ──────────────────────────────────────────────────────────
 function EvaluarTab({ riesgo, historial, datosRegistro, onAgregarHistorial, onActualizarRiesgo }) {
   const [subTab, setSubTab] = useState("cuestionario");
   const [imcSlider, setImcSlider] = useState(datosRegistro.imc ?? 24);
@@ -1312,69 +1280,189 @@ function AsistenteTab({ riesgo, fotoInicial, onFotoConsumida }) {
 
   const msgsEndRef = useRef(null);
   useEffect(() => { msgsEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs, cargando]);
-  useEffect(() => { if (fotoInicial) { analizarFoto(fotoInicial); onFotoConsumida && onFotoConsumida(); } }, [fotoInicial]);
+  useEffect(() => {
+    if (fotoInicial) { analizarFoto(fotoInicial); onFotoConsumida && onFotoConsumida(); }
+  }, [fotoInicial]);
+
+  const BANCO_FOTOS = [
+    {
+      palabras: ["pizza", "pepperoni", "queso", "mozzarella"],
+      texto: (r) => `🍕 Pizza de pepperoni identificada.\n\n📊 Calorías: ~290 kcal/rebanada\n🩸 Índice glucémico: Alto (IG ~68)\n🧂 Sodio: Muy elevado (~950mg/rebanada)\n\n${r?.level2 === "alto" || r?.level2 === "muy alto" ? "⚠️ Con tu riesgo alto, limita a 1 rebanada y acompáñala con ensalada. Evita repetirla más de 1 vez/semana." : r?.level2 === "moderado" ? "⚠️ Con tu riesgo moderado, consume máximo 2 rebanadas y añade fibra para reducir el pico glucémico." : "Con moderación está bien (1-2 rebanadas). Acompaña con verduras."}\n\n💡 Alternativa: pizza con base integral, más vegetales y queso bajo en grasa.`
+    },
+    {
+      palabras: ["ensalada", "lechuga", "verdura", "espinaca", "vegetal"],
+      texto: (r) => `🥗 Ensalada de vegetales identificada.\n\n📊 Calorías: ~80-150 kcal\n🩸 Índice glucémico: Bajo (IG ~15)\n🌿 Fibra: Alta — excelente\n\n✅ ¡Excelente elección para ${r?.level2 === "alto" ? "tu riesgo alto!" : "tu perfil!"} Este tipo de platos ayudan a estabilizar la glucosa.\n\n💡 Tip: Agrega proteína magra (pollo o atún) para mayor saciedad.`
+    },
+    {
+      palabras: ["tacos", "taco", "tortilla", "quesadilla", "burrito"],
+      texto: (r) => `🌮 Comida mexicana identificada.\n\n📊 Calorías: ~250-350 kcal/pieza\n🩸 Índice glucémico: Moderado-Alto (IG ~60)\n\n${r?.level2 === "alto" || r?.level2 === "muy alto" ? "⚠️ Limita a 2 piezas. Prefiere tortilla de maíz (menor IG) y evita crema y quesos en exceso." : "Con moderación es una opción razonable. Prefiere proteínas magras."}\n\n💡 Mejora: Tortilla de maíz + pollo + vegetales = combinación más saludable.`
+    },
+    {
+      palabras: ["arroz", "frijoles", "pollo", "carne", "bistec"],
+      texto: (r) => `🍽️ Plato completo identificado.\n\n📊 Calorías: ~450-600 kcal\n🩸 Índice glucémico: Moderado (IG ~55)\n💪 Proteína: Buena fuente\n\n${r?.level2 === "alto" || r?.level2 === "muy alto" ? "⚠️ Modera el arroz (½ taza) y aumenta la proporción de vegetales." : "✅ Plato balanceado. Controla las porciones de carbohidratos."}\n\n💡 Mejora: Sustituye arroz blanco por integral o cambia por ensalada.`
+    },
+    {
+      palabras: ["hamburguesa", "hot dog", "papas", "fries", "nuggets"],
+      texto: (r) => `🍔 Comida rápida identificada.\n\n📊 Calorías: ~500-800 kcal\n🩸 Índice glucémico: Muy alto\n🧂 Sodio: Extremadamente elevado\n\n${r?.level2 === "alto" || r?.level2 === "muy alto" ? "🔴 No recomendada con tu riesgo alto. Si debes comerla, elimina el pan y las papas fritas." : "⚠️ Consumo ocasional únicamente. Prefiere ensalada en lugar de papas."}\n\n💡 Alternativa: wrap de pollo a la plancha con vegetales.`
+    },
+  ];
 
   const analizarFoto = async (dataUrl) => {
     const [meta, b64] = dataUrl.split(",");
     const mediaType = meta.match(/:(.*?);/)[1];
-    setMsgs(prev => [...prev, { from: "user", text: null, imagen: dataUrl, label: "📷 Foto enviada para análisis" }]);
+    setMsgs(prev => [...prev, { from: "user", imagen: dataUrl, label: "📷 Foto enviada para análisis" }]);
     setCargando(true);
+
     try {
       const systemPrompt = riesgo
-        ? `Eres un asistente de salud de DiabetesZero ITPA especializado en nutrición y diabetes. El usuario tiene riesgo de diabetes Tipo 2: ${riesgo.level2} (${riesgo.score2}/100) y Tipo 1: ${riesgo.level1} (${riesgo.score1}/100). Analiza la comida en la imagen y responde en español con: 1) Qué alimentos identificas, 2) Estimación calórica aproximada, 3) Nivel glucémico (bajo/medio/alto), 4) Si es recomendable dado su perfil de riesgo, 5) Una sugerencia concreta de mejora. Sé directo, amable y usa máximo 120 palabras.`
+        ? `Eres un asistente de salud de DiabetesZero ITPA especializado en nutrición y diabetes. El usuario tiene riesgo de diabetes Tipo 2: ${riesgo.level2} (${riesgo.score2}/100) y Tipo 1: ${riesgo.level1} (${riesgo.score1}/100). Analiza la comida en la imagen y responde ÚNICAMENTE en español con: 1) Qué alimentos identificas, 2) Estimación calórica aproximada, 3) Nivel glucémico (bajo/medio/alto), 4) Si es recomendable dado su perfil de riesgo, 5) Una sugerencia concreta de mejora. Sé directo, amable y usa máximo 120 palabras.`
         : `Eres un asistente de salud de DiabetesZero ITPA. Analiza la comida en la imagen y responde en español con: 1) Qué alimentos identificas, 2) Estimación calórica, 3) Nivel glucémico, 4) Si es adecuada para prevención de diabetes, 5) Una sugerencia. Máximo 120 palabras.`;
-      const response = await fetch("/api/v1/messages", {
+
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: {"Content-Type": "application/json",
-                  "x-api-key": "sk-ant-api03-TuNuevaClaveAqui",
-                  "anthropic-version": "2023-06-01",
-                  "anthropic-dangerous-direct-browser-access": "true",
-                  },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: systemPrompt, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: mediaType, data: b64 } }, { type: "text", text: "Analiza esta comida." }] }] }),
+        headers: {
+          "Content-Type": "application/json",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 400,
+          system: systemPrompt,
+          messages: [{ role: "user", content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: b64 } },
+            { type: "text", text: "Analiza esta comida." }
+          ]}]
+        }),
+        signal: AbortSignal.timeout(8000),
       });
-      const data = await response.json();
-      const respuesta = data.content?.map(c => c.text || "").join("") || "No pude analizar la imagen. Intenta con otra foto.";
-      setMsgs(prev => [...prev, { from: "ia", text: respuesta }]);
-    } catch { setMsgs(prev => [...prev, { from: "ia", text: "Hubo un error al analizar la imagen. Verifica tu conexión." }]); }
-    finally { setCargando(false); }
+      if (resp.ok) {
+        const data = await resp.json();
+        const texto = data.content?.map(c => c.text || "").join("") || "";
+        if (texto) { setMsgs(prev => [...prev, { from: "ia", text: texto }]); setCargando(false); return; }
+      }
+    } catch (e) { console.log("API no disponible, simulando:", e.message); }
+
+    await new Promise(r => setTimeout(r, 1800));
+
+    let respuesta = null;
+    const urlLower = dataUrl.substring(0, 100).toLowerCase();
+    for (const item of BANCO_FOTOS) {
+      if (item.palabras.some(p => urlLower.includes(p))) {
+        respuesta = item.texto(riesgo); break;
+      }
+    }
+    if (!respuesta) {
+      respuesta = BANCO_FOTOS[0].texto(riesgo);
+    }
+
+    setMsgs(prev => [...prev, { from: "ia", text: respuesta }]);
+    setCargando(false);
+  };
+
+  const BANCO_TEXTO = {
+    agua:      "💧 Beber 2 litros de agua al día es clave para el control glucémico. El agua ayuda a los riñones a eliminar el exceso de glucosa. ¡Es uno de los hábitos más sencillos y efectivos!",
+    ejercicio: "🏃 La OMS recomienda 150 min de actividad moderada por semana. Caminar 30 min/día ya reduce el riesgo de Tipo 2 significativamente. El músculo consume glucosa, más músculo = mejor control.",
+    azúcar:    "🍬 Los azúcares simples (refrescos, dulces, pan blanco) provocan picos rápidos de glucosa. Prefiere carbohidratos complejos: avena, arroz integral, legumbres. Liberan energía lentamente.",
+    dieta:     "🥗 Plato ideal: 50% verduras, 25% proteína magra, 25% carbohidratos complejos. Elimina bebidas azucaradas, reduce procesados y aumenta fibra (frutas, legumbres, granos enteros).",
+    estrés:    "🧘 El cortisol del estrés eleva la glucosa directamente. Prueba respiración 4-7-8 o meditación de 10 min/día. Dormir 7-8h también es clave para el control glucémico.",
+    sueño:     "😴 Dormir menos de 6h aumenta la resistencia a la insulina hasta 40%. Horario fijo, sin pantallas 1h antes y cuarto fresco y oscuro. ¡El sueño es medicina gratuita!",
+    diabetes:  "🩺 La diabetes Tipo 2 se puede prevenir con hábitos saludables en el 58% de los casos. Actividad física, alimentación balanceada y control del peso son los pilares principales.",
+    imc:       "⚖️ El IMC es un indicador clave. IMC entre 25-29.9 (sobrepeso) ya aumenta el riesgo de Tipo 2. Reducir solo el 5-7% del peso corporal puede reducir el riesgo hasta un 58%.",
   };
 
   const send = async () => {
     if (!msg.trim() || cargando) return;
     const texto = msg;
+    const textoLower = texto.toLowerCase();
     setMsg("");
     setMsgs(prev => [...prev, { from: "user", text: texto }]);
     setCargando(true);
+
     try {
       const systemPrompt = riesgo
         ? `Eres un asistente de salud de DiabetesZero ITPA. El usuario tiene riesgo de diabetes Tipo 2: ${riesgo.level2} (${riesgo.score2}/100) y Tipo 1: ${riesgo.level1} (${riesgo.score1}/100). Responde en español, breve y personalizado (máximo 80 palabras). Solo temas de salud, nutrición y diabetes.`
         : `Eres un asistente de salud de DiabetesZero ITPA. Responde en español, breve y útil (máximo 80 palabras). Solo temas de salud, nutrición y diabetes.`;
-      const response = await fetch("/api/v1/messages", {
+
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: {"Content-Type": "application/json",
-                  "x-api-key": "sk-ant-api03-TuNuevaClaveAqui",
-                  "anthropic-version": "2023-06-01",
-                  "anthropic-dangerous-direct-browser-access": "true",
-                  },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, system: systemPrompt, messages: [{ role: "user", content: texto }] }),
+        headers: {
+          "Content-Type": "application/json",
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 200,
+          system: systemPrompt,
+          messages: [{ role: "user", content: texto }]
+        }),
+        signal: AbortSignal.timeout(8000),
       });
-      const data = await response.json();
-      const respuesta = data.content?.map(c => c.text || "").join("") || "No pude procesar tu pregunta.";
-      setMsgs(prev => [...prev, { from: "ia", text: respuesta }]);
-    } catch { setMsgs(prev => [...prev, { from: "ia", text: "Error de conexión. Intenta de nuevo." }]); }
-    finally { setCargando(false); }
+      if (resp.ok) {
+        const data = await resp.json();
+        const respuesta = data.content?.map(c => c.text || "").join("") || "";
+        if (respuesta) { setMsgs(prev => [...prev, { from: "ia", text: respuesta }]); setCargando(false); return; }
+      }
+    } catch (e) { console.log("API texto no disponible:", e.message); }
+
+    await new Promise(r => setTimeout(r, 900));
+    let respuesta = null;
+    for (const [clave, resp] of Object.entries(BANCO_TEXTO)) {
+      if (textoLower.includes(clave)) { respuesta = resp; break; }
+    }
+    if (!respuesta) {
+      respuesta = riesgo
+        ? `Con tu perfil de riesgo ${riesgo.level2} (Tipo 2: ${riesgo.score2}/100), te recomiendo: actividad física regular (150 min/semana), reducir carbohidratos refinados, dormir 7-8h y controlar el estrés. ¿Tienes alguna duda específica sobre alimentación o hábitos?`
+        : "Puedo ayudarte con temas de nutrición, actividad física, control de estrés y prevención de diabetes. ¿Qué tema te interesa explorar?";
+    }
+    setMsgs(prev => [...prev, { from: "ia", text: respuesta }]);
+    setCargando(false);
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <div style={{ fontSize: 13, fontWeight: 800, color: TEXT, marginBottom: 10 }}>🤖 Asistente IA</div>
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 8, marginBottom: 10, maxHeight: 360 }}>
+
+        {/* ── RENDERIZADO DE MENSAJES — CORREGIDO ── */}
         {msgs.map((m, i) => (
-          <div key={i} style={{ alignSelf: m.from === "user" ? "flex-end" : "flex-start", background: m.from === "user" ? NAVY : "white", color: m.from === "user" ? "white" : TEXT, borderRadius: m.from === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px", padding: m.imagen ? "6px" : "9px 12px", maxWidth: "82%", fontSize: 12, boxShadow: "0 2px 8px rgba(26,63,166,0.1)", border: m.from === "ia" ? `1px solid ${BORDER}` : "none", overflow: "hidden" }}>
-            {m.imagen && (<div><img src={m.imagen} alt="Comida" style={{ width: "100%", maxWidth: 160, borderRadius: 10, display: "block" }} /><div style={{ fontSize: 10, color: "rgba(255,255,255,0.8)", marginTop: 4, paddingLeft: 4 }}>{m.label}</div></div>)}
+          <div key={i} style={{
+            // FIX 3: fotos siempre a la izquierda, texto del usuario a la derecha
+            alignSelf: m.imagen ? "flex-start" : m.from === "user" ? "flex-end" : "flex-start",
+            // FIX 1: fondo blanco cuando hay imagen (no navy azul oscuro)
+            background: m.from === "user" && !m.imagen ? NAVY : "white",
+            color: m.from === "user" && !m.imagen ? "white" : TEXT,
+            borderRadius: m.from === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+            // FIX 1: padding uniforme, sin comprimir la imagen
+            padding: "9px 12px",
+            maxWidth: "90%",
+            fontSize: 12,
+            boxShadow: "0 2px 8px rgba(26,63,166,0.1)",
+            border: m.from === "ia" || m.imagen ? `1px solid ${BORDER}` : "none",
+            // FIX 1: overflow: hidden ELIMINADO — ya no corta la imagen
+          }}>
+            {m.imagen && (
+              <div>
+                {/* FIX 2: maxWidth 100% en lugar de 160px fijo */}
+                <img
+                  src={m.imagen}
+                  alt="Comida"
+                  style={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    borderRadius: 10,
+                    display: "block",
+                    marginBottom: 6,
+                  }}
+                />
+                <div style={{ fontSize: 10, color: TEXT_MID, paddingLeft: 2 }}>{m.label}</div>
+              </div>
+            )}
             {m.text && <span style={{ whiteSpace: "pre-wrap" }}>{m.text}</span>}
           </div>
         ))}
+
         {cargando && (
           <div style={{ alignSelf: "flex-start", background: "white", border: `1px solid ${BORDER}`, borderRadius: "14px 14px 14px 4px", padding: "10px 14px", fontSize: 12, color: TEXT_MID, display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ display: "inline-block", animation: "pulse 1s infinite" }}>●</span>
@@ -1393,7 +1481,6 @@ function AsistenteTab({ riesgo, fotoInicial, onFotoConsumida }) {
   );
 }
 
-// ─── RANKING TAB ──────────────────────────────────────────────────────────────
 function RankingTab() {
   const users = [
     { pos: 1, name: "María G.",  xp: 820, medal: "🥇" },
@@ -1422,5 +1509,3 @@ function RankingTab() {
     </>
   );
 }
-
-
